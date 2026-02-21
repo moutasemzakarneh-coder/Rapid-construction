@@ -1,1 +1,103 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>لعبة البناء</title>
+<style>
+body{
+    font-family: Arial;
+    background:#1e1e2f;
+    color:white;
+    text-align:center;
+}
+#money{
+    font-size:24px;
+    margin:20px;
+}
+button{
+    padding:10px 20px;
+    margin:5px;
+    font-size:16px;
+    cursor:pointer;
+}
+.house{
+    border:2px solid white;
+    padding:10px;
+    margin:10px;
+}
+</style>
+</head>
+<body>
+
+<h1>🏗️ لعبة بناء البيوت</h1>
+<div id="money">💰 الفلوس: 100</div>
+<button onclick="buildHouse()">ابني بيت (السعر 50)</button>
+
+<div id="houses"></div>
+
+<script>
+let money = 100;
+let houses = [];
+
+function updateUI(){
+    document.getElementById("money").innerText = "💰 الفلوس: " + Math.floor(money);
+}
+
+function buildHouse(){
+    if(money >= 50){
+        money -= 50;
+        let house = {
+            level:1,
+            income:1
+        };
+        houses.push(house);
+        renderHouses();
+        updateUI();
+    }else{
+        alert("ما معك فلوس كفاية!");
+    }
+}
+
+function renderHouses(){
+    let container = document.getElementById("houses");
+    container.innerHTML = "";
+    houses.forEach((house,index)=>{
+        container.innerHTML += `
+        <div class="house">
+            🏠 بيت رقم ${index+1} <br>
+            المستوى: ${house.level} <br>
+            الدخل: ${house.income} كل ثانية <br>
+            <button onclick="upgradeHouse(${index})">
+            تطوير (السعر ${house.level*40})
+            </button>
+        </div>
+        `;
+    });
+}
+
+function upgradeHouse(index){
+    let cost = houses[index].level * 40;
+    if(money >= cost){
+        money -= cost;
+        houses[index].level++;
+        houses[index].income += 1;
+        renderHouses();
+        updateUI();
+    }else{
+        alert("ما معك فلوس كفاية!");
+    }
+}
+
+setInterval(()=>{
+    houses.forEach(house=>{
+        money += house.income;
+    });
+    updateUI();
+},1000);
+
+updateUI();
+</script>
+
+</body>
+  </html>
